@@ -1078,6 +1078,7 @@
                 "doctrine/inflector": "^2.0.5",
                 "dragonmantank/cron-expression": "^3.4",
                 "egulias/email-validator": "^3.2.1|^4.0",
+                "fakerphp/faker": "^1.24",
                 "ext-ctype": "*",
                 "ext-filter": "*",
                 "ext-hash": "*",

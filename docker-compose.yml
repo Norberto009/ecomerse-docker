@@ -1,0 +1,97 @@
+
+
+name: ecommerce
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    enviroment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumenes:
+      - db_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["DMS-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"] 
+      interval: 10s
+      timeout: 5s
+      retries:10
+      start_period: 30s
+    networks:
+      - internal
+
+api:
+  build:
+    context: ./backend
+    target: api
+  image: ecommerce-api:latest
+  restart: unless-stopped
+  environment:
+    APP_NAME: Ecommerce
+    APP_ENV: production
+    APP_DEBUG: "false"
+    APP_KEY: ${APP_KEY}
+    APP_URL: ${APP_URL}
+    LOG_NAME: stderr
+    LOG_LEVEL: warning
+    DB_CONNECTION: mysql
+    DB_HOST: db
+    DB_PORT: 3306
+    DB_DATABASE: ${MYSQL_DATABASE}
+    DB_USERNAME: ${MYSQL_USER}
+    DB_PASSWORD: ${MYSQL_PASSWORD}
+  depends_on:
+    db:
+      condition: service_healthy
+  healthcheck:
+    test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', 9000) ? 0 : 1);"]
+    interval: 10s
+    timeout: 5s
+    retries: 10
+    start_period: 60s
+  networks:
+    - internal
+
+nginx:
+  build:
+    context: ./backend
+    target: ngixn
+  image: ecommerce-ngixn:latest
+  restart: unless-stopped
+  ports:
+    - "8000:80"
+  depends_on:
+    api:
+      condition: service_healthy
+  healthcheck:
+    test: ["CMD-SHELL", "wget -q0- http://127.0.0.1/up > /dev/null || exit 1"]
+    interval: 15s
+    timeout: 5s
+    retries: 5
+    start_period: 10s
+  networks:
+    - public
+    - internal
+
+frontend:
+  build:
+    context: ./frontend
+  image: ecommerce-frontend:latest
+  restart: unless-stopped
+  environment:
+    API_BASE_URL: ${API_BASE_URL}
+  ports:
+    -"3000:3000"
+  depends_on:
+    ngixn:
+      condition: service_healthy
+  networks:
+    public:
+    internal:
+      internal: true
+
+volumes:
+  db_data:                                                  
