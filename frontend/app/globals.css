@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+/*
+ * Paleta del proyecto (terracota y crema).
+ *
+ * `--color-*: initial` elimina la paleta por defecto de Tailwind (slate, blue, red…),
+ * así solo existen los colores definidos aquí y nadie usa un azul por accidente.
+ * Si alguna vez necesitas recuperar los colores por defecto, borra esa línea.
+ */
+@theme {
+  --color-*: initial;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Marca */
+  --color-primary: #b85a24;        /* botones, logo, avatar */
+  --color-primary-strong: #9c4a1c; /* hover de botones y enlaces sobre fondo claro */
+  --color-primary-soft: #e8a46b;   /* badges y acentos (siempre con texto ink) */
+  --color-primary-tint: #fbeadb;   /* fondos suaves de aviso informativo */
+
+  /* Texto */
+  --color-ink: #2b1d14;            /* títulos y texto principal */
+  --color-ink-soft: #5c4a3d;       /* menú, etiquetas de formulario */
+  --color-muted: #7a6657;          /* texto secundario */
+  --color-faint: #9a8474;          /* detalles menores (× cantidad) */
+
+  /* Superficies */
+  --color-canvas: #fdf8f3;         /* fondo de la página */
+  --color-surface: #ffffff;        /* tarjetas y barra superior */
+  --color-sunken: #f6ede4;         /* fondos de imagen, hover de filas, deshabilitados */
+  --color-skeleton: #ede1d5;       /* cargas (animate-pulse) */
+
+  /* Bordes */
+  --color-line: #e8d9cb;           /* bordes de tarjetas y separadores */
+  --color-line-strong: #d8c3b0;    /* inputs y recuadros punteados */
+  --color-line-soft: #f2e8de;      /* divisores internos de listas */
+
+  /* Estados: armonizados con la paleta cálida */
+  --color-success: #3f6b34;
+  --color-success-strong: #2d4e25;
+  --color-success-soft: #eef4e9;
+  --color-success-tint: #dde9d4;
+  --color-success-line: #c9dcbd;
+
+  --color-danger: #a8323c;
+  --color-danger-strong: #6e1d25;
+  --color-danger-hover: #8a2830;
+  --color-danger-soft: #fceeee;
+  --color-danger-tint: #f7ddde;
+  --color-danger-line: #eec6c9;
+
+  /* Sombras con tinte café en lugar de negro puro */
+  --shadow-sm: 0 1px 3px 0 rgb(43 29 20 / 0.08), 0 1px 2px -1px rgb(43 29 20 / 0.08);
+  --shadow-md: 0 4px 6px -1px rgb(43 29 20 / 0.08), 0 2px 4px -2px rgb(43 29 20 / 0.08);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+  }
+
+  /* Controles nativos (checkbox, radio, range) y selección de texto */
+  :root {
+    accent-color: var(--color-primary);
+  }
+
+  ::selection {
+    background-color: var(--color-primary-soft);
+    color: var(--color-ink);
+  }
+
+  /* Foco de teclado visible y en la paleta (el navegador lo pinta azul por defecto) */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
